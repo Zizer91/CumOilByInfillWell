@@ -1,0 +1,26 @@
+version: '3.8'
+
+services:
+  jupyter:
+    build: .
+    ports:
+      - "7777:7777"
+    volumes:
+      - ./app:/app
+      - ./arps_d_teach:/arps_d_teach  # Монтирование папки arps_d_teach
+    command: jupyter notebook --ip=0.0.0.0 --no-browser --allow-root --NotebookApp.token='' --port=7777
+    depends_on:
+      - mysql
+
+  mysql:
+    image: mysql:8.0
+    environment:
+      MYSQL_ROOT_PASSWORD: Qsc_028ud
+      MYSQL_DATABASE: oil_production_db
+    volumes:
+      - db_data:/var/lib/mysql
+      - ./database_dump.sql:/docker-entrypoint-initdb.d/database_dump.sql
+      - ./arps_d_teach:/arps_d_teach  # Монтирование папки arps_d_teach
+
+volumes:
+  db_data:
